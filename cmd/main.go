@@ -6,5 +6,7 @@ func main() {
 	lcCfg := local.NewLocalConfig("./exp/from", "./exp/to")
 	lc := local.NewLocal(lcCfg)
 
-	lc.Upload("demo.pdf")
+	// lc.Upload("1.pdf")
+
+	lc.UploadAllFiles("./exp/from")
 }
