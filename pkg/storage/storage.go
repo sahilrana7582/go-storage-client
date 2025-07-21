@@ -4,9 +4,8 @@ type Storage interface {
 	Upload(fileName string) error
 	UploadAllFiles(dirPath string) error
 	// Download(remotePath, localPath string) error
-	// Delete(remotePath string) error
-	// List(remotePath string) ([]string, error)
-	// ViewFile(fileName, remotePath string) (string, error)
+	Delete(remotePath, fileName string) error
+	Prune(retentionDays int) error
 }
 
 type Client struct {

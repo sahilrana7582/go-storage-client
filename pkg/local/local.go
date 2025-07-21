@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/sahilrana7582/go-storage/pkg/storage"
 )
@@ -77,6 +78,57 @@ func (l LocalStorage) UploadAllFiles(dirPath string) error {
 	})
 
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (l LocalStorage) Delete(remotePath, fileName string) error {
+	err := os.Remove(filepath.Join(remotePath, fileName))
+	if err != nil {
+		fmt.Println("Error deleting file:", err)
+		return err
+	}
+
+	return nil
+}
+
+func (l LocalStorage) Prune(retentionDays int) error {
+	timeNow := time.Now()
+
+	deleteFile := func(filePath string) error {
+		err := os.Remove(filePath)
+		if err != nil {
+			fmt.Println("Error deleting file:", err)
+			return err
+		}
+		return nil
+	}
+
+	err := filepath.Walk(l.RemotePath, func(path string, info os.FileInfo, err error) error {
+
+		if err != nil {
+			fmt.Println("Error accessing path:", err)
+			return err
+		}
+
+		if info.Mode().IsRegular() {
+			timeDiff := timeNow.Sub(info.ModTime())
+
+			if timeDiff.Minutes() > float64(retentionDays*1) {
+				err := deleteFile(path)
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		fmt.Println("Error walking directory:", err)
 		return err
 	}
 

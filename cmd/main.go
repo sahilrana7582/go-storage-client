@@ -8,5 +8,7 @@ func main() {
 
 	// lc.Upload("1.pdf")
 
-	lc.UploadAllFiles("./exp/from")
+	// lc.UploadAllFiles("./exp/from")
+
+	lc.Prune(1)
 }
